@@ -6,12 +6,13 @@ import postRoutes from './routes/post.js';
 
 const app = express();
 
-// Add prefix - every routes in posts.js will start with /posts
-app.use('/posts', postRoutes);
-
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+// cors() has to be ontop of routes
 app.use(cors());
+
+// Add prefix - every routes in posts.js will start with /posts
+app.use('/posts', postRoutes);
 
 //https://www.mongodb.com/cloud/atlas
 
