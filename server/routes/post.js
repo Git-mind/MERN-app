@@ -1,5 +1,5 @@
 import express from 'express';
-import { getPosts, createPost, updatePost } from '../controllers/post.js';
+import { getPosts, createPost, updatePost, deletePost } from '../controllers/post.js';
 const router = express.Router();
 
 //Add routes
@@ -14,4 +14,5 @@ router.post('/', createPost);
 router.patch('/:id', updatePost)
 // we need to know the id first in order to update existing post
 
+router.delete('/:id', deletePost);
 export default router;
