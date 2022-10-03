@@ -1,5 +1,5 @@
 import express from 'express';
-import { getPosts, createPost } from '../controllers/post.js';
+import { getPosts, createPost, updatePost } from '../controllers/post.js';
 const router = express.Router();
 
 //Add routes
@@ -9,5 +9,9 @@ const router = express.Router();
 // no logic in router, add logic in controller
 router.get('/', getPosts);
 router.post('/', createPost);
+
+//patch is use to update existing document
+router.patch('/:id', updatePost)
+// we need to know the id first in order to update existing post
 
 export default router;
