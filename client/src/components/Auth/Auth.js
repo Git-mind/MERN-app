@@ -8,6 +8,9 @@ import Icon from './Icon';
 import { gapi } from "gapi-script";
 import { useDispatch} from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { signin, signup} from "../../actions/auth";
+
+const initialState = {firstName: '', lastName: '', email: '', password:'', confirmPassword:''}
 
 const Auth = () => {
   useEffect(() => {
@@ -24,18 +27,39 @@ const Auth = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  const [formData, setFormData] = useState(initialState);
   const dispatch = useDispatch();
   const history = useHistory();
 
   
   const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
 
-  const handleSubmit = ()=>{
+  const handleSubmit = (e)=>{
+    // default behavior for browser to refresh on form submit
+    // e = event
+    // always add e.preventDefault() to prevent reload onSubmit
+    e.preventDefault();
+    
+    //logic for sign up and sign in
+    console.log(isSignup)
 
+    if(isSignup){
+      // dispatch signup action
+      // pass in entire form data to store it in database
+      // pass in history to navigate
+      dispatch(signup(formData, history))
+
+    } else{
+      dispatch(signin(formData, history))
+
+    }
   }
 
-  const handleChange = ()=>{
-
+  const handleChange = (e)=>{
+    //spread formData
+    //update only a specific input. Each input has it own unique name
+    // []: only change the one specific input that user is on
+    setFormData({...formData, [e.target.name]: e.target.value })
   }
 
   //2022: update. Need to 'npm i gapi-script'
@@ -65,7 +89,7 @@ const Auth = () => {
   const switchMode = ()=>{
    setIsSignup((prevIsSignup) => !prevIsSignup);
     console.log(isSignup)
-    handleShowPassword(false);
+    setShowPassword(false);
   }
   return (
     <Container componenet="main" maxWidth="xs">
@@ -82,7 +106,7 @@ const Auth = () => {
               isSignup && (
                 <>
                   <Input  name="firstName" label="First Name" handleChange={handleChange} autoFocus xs={6}/>
-                  <Input  name="firstName" label="First Name" handleChange={handleChange} autoFocus xs={6}/>       
+                  <Input  name="lastName" label="Last Name" handleChange={handleChange} autoFocus xs={6}/>       
                 </>
               )
             }

@@ -2,8 +2,11 @@ import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
-import postRoutes from './routes/post.js';
-import dotenv from 'dotenv';
+
+import postRoutes from "./routes/post.js";
+import userRoutes from "./routes/user.js";
+
+import dotenv from "dotenv";
 
 const app = express();
 dotenv.config();
@@ -14,7 +17,9 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
 // Add prefix - every routes in posts.js will start with /posts
-app.use('/posts', postRoutes);
+app.use("/posts", postRoutes);
+
+app.use("/user", userRoutes);
 
 //https://www.mongodb.com/cloud/atlas
 
