@@ -1,15 +1,33 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { Avatar, Paper, Grid, Typography, Container, Button } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
-import Input from './Input'
-import useStyles from './styles'
+import Input from './Input';
+import useStyles from './styles';
+import { GoogleLogin } from 'react-google-login';
+import Icon from './Icon';
+import { gapi } from "gapi-script";
+import { useDispatch} from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 const Auth = () => {
+  useEffect(() => {
+    function start() {
+    gapi.client.init({
+    clientId:"128710837230-lgp1d3h3d81j4bk87u6pllvtn5infi7a.apps.googleusercontent.com",
+    scope: 'email',
+      });
+       }
+      gapi.load('client:auth2', start);
+       }, []);
+
   const classes = useStyles();
 
   const [showPassword, setShowPassword] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  const dispatch = useDispatch();
+  const history = useHistory();
 
+  
   const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
 
   const handleSubmit = ()=>{
@@ -19,7 +37,29 @@ const Auth = () => {
   const handleChange = ()=>{
 
   }
-  
+
+  //2022: update. Need to 'npm i gapi-script'
+  const googleSuccess = async (res)=>{
+    console.log(res)
+    // ?. - optional chaining operator that won't throw an error if we don't have access to the rest object
+    const result = res?.profileObj; 
+    const token = res?.tokenId;
+
+    try {
+      dispatch( {type:'AUTH', data: { result, token}} );
+      
+      history.push('/')
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const googleFailure = (error)=>{
+    console.log(error)
+    console.log("Google Sign in was unsuccessful. Try Again Later")
+  }
+
    //call back function to switch on and off.
   // get current value  and pass it as parameter into the function and switches between true and false
   const switchMode = ()=>{
@@ -55,7 +95,17 @@ const Auth = () => {
             { isSignup ? 'Sign Up' : 'Sign In' }
           </Button>
 
-          
+          <GoogleLogin
+            clientId="128710837230-lgp1d3h3d81j4bk87u6pllvtn5infi7a.apps.googleusercontent.com"
+            render={(renderProps) => (
+              <Button className={classes.googleButton} color="primary" fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={<Icon />} variant="contained">
+                Google Sign In
+              </Button>
+            )}
+            onSuccess={googleSuccess}
+            onFailure={googleFailure}
+            cookiePolicy="single_host_origin"
+          />
 
           <Grid container justifyContent='flex-end'>
             <Grid item>
