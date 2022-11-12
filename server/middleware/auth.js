@@ -10,7 +10,7 @@ const auth = async(req, res, next) => {
     // after user is sign up or sign in, user will get a token
     // check if user token is valid to do other actions on the web application
     try {
-        const token = req.headers.authorization.split("")[1];
+        const token = req.headers.authorization.split(" ")[1];
         
         //if length is greater than 500 means it is using google Auth
         const isCustomAuth = token.length < 500;
