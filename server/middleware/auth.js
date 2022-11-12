@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken';
 // click the like button => auth middleware (next) => like controller...
 // auth middlewre confirms or deny that request
 
+const secret = "test";
+
 const auth = async(req, res, next) => {
     // after user is sign up or sign in, user will get a token
     // check if user token is valid to do other actions on the web application
@@ -20,7 +22,7 @@ const auth = async(req, res, next) => {
         if(token && isCustomAuth){
             // verify token gives us the data that contain username and id 
             // "test" is the secrets
-            decodedData = jwt.verify(token, "test");
+            decodedData = jwt.verify(token, secret);
 
             req.userId = decodedData?.id;
 

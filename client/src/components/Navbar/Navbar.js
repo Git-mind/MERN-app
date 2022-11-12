@@ -4,33 +4,40 @@ import { AppBar, Typography, Toolbar, Button, Avatar} from "@material-ui/core";
 import useStyles from './styles'
 import memories from '../../images/memories.png'
 import {useDispatch} from 'react-redux'
+import decode from 'jwt-decode';
+import * as actionType from '../../constants/actionTypes';
 
 const Navbar = () => {
-    const classes = useStyles();
     
     //from auth.js reducers
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
     const dispatch = useDispatch();
     const history = useHistory();
     const location = useLocation();
+    const classes = useStyles();
 
     const logout = () =>{
         //once logout, push it to the root home
 
         //dispatch an action type of 'LOGOUT'
-        dispatch({ type: 'LOGOUT'});
-
+        dispatch({ type: actionType.LOGOUT });
         //Redirect to the main route
-        history.push('/')
+        history.push('/auth')
 
         //once logout, user has to be null
         setUser(null);
     };
 
     useEffect(()=>{
-        const token = user?.token;
-        
         // JWT.. for manual sign up
+        const token = user?.token;
+    
+        // token expiry
+        if (token) {
+            const decodedToken = decode(token);
+            // get token expiry time in milliseconds lower the current time in ms - log user out
+            if (decodedToken.exp * 1000 < new Date().getTime()) logout();
+          }
 
         // google sign
         setUser(JSON.parse(localStorage.getItem('profile')));

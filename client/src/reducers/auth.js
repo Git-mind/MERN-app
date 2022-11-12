@@ -10,11 +10,11 @@ const authReducer = (state = { authData: null}, action) => {
             localStorage.setItem('profile', JSON.stringify({ ...action?.data }));
 
 
-            return {...state, authData: action?.data};
+            return { ...state, authData: action.data, loading: false, errors: null };
         case LOGOUT:
             //1:14:02 - need to clear local storage, otherwise when you refresh the page it will stay login even when you click logout.
             localStorage.clear();
-            return {...state, authData: null};
+            return { ...state, authData: null, loading: false, errors: null };
         default:
             return state;
     }
